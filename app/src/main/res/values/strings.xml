@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Web3jAndroid</string>
+    <string name="textview_generate_wallet">Generate wallet</string>
+    <string name="textview_password">Password</string>
+    <string name="textview_etherbase">Etherbase</string>
+    <string name="textview_account_address">Account address</string>
+</resources>
