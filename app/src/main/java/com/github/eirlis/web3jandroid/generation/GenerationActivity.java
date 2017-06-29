@@ -46,17 +46,20 @@ public class GenerationActivity extends AppCompatActivity implements GenerationC
         mGenerateWalletButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(GenerationActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager
-                        .PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(GenerationActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                int permissionCheck = ContextCompat.checkSelfPermission(GenerationActivity.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                            GenerationActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             REQUEST_PERMISSION_WRITE_STORAGE);
                 } else {
-                    mWalletPresenter = new GenerationPresenter(GenerationActivity.this, mPassword.getText().toString());
+                    mWalletPresenter = new GenerationPresenter(GenerationActivity.this,
+                            mPassword.getText().toString());
                     mWalletPresenter.generateWallet(mPassword.getText().toString());
                     Intent intent = new Intent(GenerationActivity.this, WalletActivity.class);
                     intent.putExtra("WalletAddress", mWalletAddress);
                     startActivity(intent);
-                    Log.e(TAG, "showGeneratedWallet");
                 }
             }
         });
