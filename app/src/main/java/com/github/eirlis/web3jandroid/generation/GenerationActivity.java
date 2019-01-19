@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.github.eirlis.web3jandroid.R;
 import com.github.eirlis.web3jandroid.wallet.WalletActivity;
@@ -34,6 +35,9 @@ public class GenerationActivity extends AppCompatActivity implements GenerationC
 
     private EditText mPassword;
 
+    private ProgressBar mProgressBar;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,7 @@ public class GenerationActivity extends AppCompatActivity implements GenerationC
 
         mGenerateWalletButton = (Button) findViewById(R.id.generate_wallet_button);
         mPassword = (EditText) findViewById(R.id.password);
+        mProgressBar = (ProgressBar) findViewById(R.id.generate_wallet_progress);
 
         mGenerateWalletButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,12 +59,28 @@ public class GenerationActivity extends AppCompatActivity implements GenerationC
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             REQUEST_PERMISSION_WRITE_STORAGE);
                 } else {
-                    mWalletPresenter = new GenerationPresenter(GenerationActivity.this,
-                            mPassword.getText().toString());
-                    mWalletPresenter.generateWallet(mPassword.getText().toString());
-                    Intent intent = new Intent(GenerationActivity.this, WalletActivity.class);
-                    intent.putExtra("WalletAddress", mWalletAddress);
-                    startActivity(intent);
+
+                    mProgressBar.setVisibility(View.VISIBLE);
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mWalletPresenter = new GenerationPresenter(GenerationActivity.this,
+                                    mPassword.getText().toString());
+                            mWalletPresenter.generateWallet(mPassword.getText().toString());
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(GenerationActivity.this, WalletActivity.class);
+                                    intent.putExtra("WalletAddress", mWalletAddress);
+                                    startActivity(intent);
+
+                                    mProgressBar.setVisibility(View.GONE);
+                                }
+                            });
+                        }
+                    }).start();
                 }
             }
         });
