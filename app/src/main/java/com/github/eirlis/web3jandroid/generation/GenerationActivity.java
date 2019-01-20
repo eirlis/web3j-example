@@ -9,10 +9,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.github.eirlis.web3jandroid.R;
 import com.github.eirlis.web3jandroid.wallet.WalletActivity;
@@ -38,7 +40,6 @@ public class GenerationActivity extends AppCompatActivity implements GenerationC
     private ProgressBar mProgressBar;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +59,11 @@ public class GenerationActivity extends AppCompatActivity implements GenerationC
                             GenerationActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             REQUEST_PERMISSION_WRITE_STORAGE);
-                } else {
+                }
+                else if (mPassword.getText().toString().length() <= 0){
+                    Toast.makeText(GenerationActivity.this,"Password field cannot be empty", Toast.LENGTH_SHORT).show();
+                }
+                else {
 
                     mProgressBar.setVisibility(View.VISIBLE);
 
